@@ -3,18 +3,14 @@ package com.example.roulette.view
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.view.View
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil.setContentView
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.example.roulette.R
 import com.example.roulette.customview.MyActionBar
 import com.example.roulette.databinding.ActivityMainBinding
-import com.example.roulette.repository.data.RouletteItem
+import com.example.roulette.repository.database.entity.RouletteItem
 import com.example.roulette.viewmodel.MainViewModel
-import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
     companion object {

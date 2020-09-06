@@ -1,7 +1,5 @@
 package com.example.roulette.adapter
 
-import android.graphics.Color
-import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
@@ -10,7 +8,7 @@ import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.example.roulette.R
-import com.example.roulette.repository.data.RouletteItem
+import com.example.roulette.repository.database.entity.RouletteItem
 import kotlinx.android.synthetic.main.adapter_setting_item.view.*
 import java.util.*
 
@@ -58,7 +56,7 @@ class SettingItemAdpater(
 
     inner class DiffCallback: DiffUtil.ItemCallback<RouletteItem>() {
         override fun areItemsTheSame(oldItem: RouletteItem, newItem: RouletteItem)
-                = oldItem.id == newItem.id
+                = oldItem.seq == newItem.seq
 
         override fun areContentsTheSame(oldItem: RouletteItem, newItem: RouletteItem)
                 = oldItem.name == newItem.name

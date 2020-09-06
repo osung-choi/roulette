@@ -5,7 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.roulette.SingleLiveEvent
 import com.example.roulette.repository.Utils
-import com.example.roulette.repository.data.RouletteItem
+import com.example.roulette.repository.database.entity.RouletteItem
 
 
 class MainViewModel : ViewModel() {

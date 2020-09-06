@@ -8,7 +8,7 @@ import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.view.animation.RotateAnimation
 import com.example.roulette.R
-import com.example.roulette.repository.data.RouletteItem
+import com.example.roulette.repository.database.entity.RouletteItem
 
 import kotlin.math.cos
 import kotlin.math.sin

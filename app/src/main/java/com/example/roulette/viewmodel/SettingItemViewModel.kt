@@ -5,8 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.roulette.SingleLiveEvent
 import com.example.roulette.repository.*
-import com.example.roulette.repository.data.RouletteItem
-import java.util.*
+import com.example.roulette.repository.database.entity.RouletteItem
 import kotlin.collections.ArrayList
 
 class SettingItemViewModel: ViewModel() {
@@ -43,7 +42,8 @@ class SettingItemViewModel: ViewModel() {
     }
 
     fun addNewItem(name: String) {
-        RouletteItem(idx++, name).run {
+        RouletteItem(idx++,0, name)
+            .run {
             _items += this
         }
     }

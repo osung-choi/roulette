@@ -3,7 +3,7 @@ package com.example.roulette.binding
 import android.view.View
 import androidx.databinding.BindingAdapter
 import com.example.roulette.customview.RouletteView
-import com.example.roulette.repository.data.RouletteItem
+import com.example.roulette.repository.database.entity.RouletteItem
 
 object BindingAdapters {
     @JvmStatic
