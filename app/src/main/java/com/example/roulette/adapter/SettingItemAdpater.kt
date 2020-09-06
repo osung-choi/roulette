@@ -13,7 +13,7 @@ import kotlinx.android.synthetic.main.adapter_setting_item.view.*
 import java.util.*
 
 class SettingItemAdpater(
-    private val dragListener: ItemMoveSwifeCallback.ItemDragListener
+    private val dragListener: ItemMoveSwipeCallback.ItemDragListener
 ): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private val diffUtil = AsyncListDiffer(this, DiffCallback())

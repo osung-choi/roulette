@@ -24,6 +24,12 @@ android {
         }
     }
 
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+
     dataBinding {
         enabled = true
     }
@@ -49,7 +55,11 @@ dependencies {
 
     implementation "androidx.room:room-runtime:$room_version"
     annotationProcessor "androidx.room:room-compiler:$room_version" // For Kotlin use kapt instead of annotationProcessor
-    // optional - RxJava support for Room
-    implementation "io.reactivex.rxjava3:rxjava:3.0.6"
+
+    implementation "androidx.room:room-rxjava2:$room_version"
+
+
+    implementation "android.arch.persistence.room:runtime:1.1.1"
+    kapt "android.arch.persistence.room:compiler:1.1.1"
 
 }

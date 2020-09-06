@@ -5,7 +5,7 @@ import java.util.*
 import kotlin.collections.ArrayList
 
 const val MAX_ITEM_COUNT = 12
-const val MIN_ITEM_COUNT = 1
+const val MIN_ITEM_COUNT = 2
 
 fun<T> MutableLiveData<ArrayList<T>>.checkMaxSize(): Boolean {
     val list = this.value ?: arrayListOf()
@@ -14,7 +14,7 @@ fun<T> MutableLiveData<ArrayList<T>>.checkMaxSize(): Boolean {
 
 fun<T> MutableLiveData<ArrayList<T>>.checkMinSize(): Boolean {
     val list = this.value ?: arrayListOf()
-    return list.size > MIN_ITEM_COUNT
+    return list.size >= MIN_ITEM_COUNT
 }
 
 fun<T> MutableLiveData<ArrayList<T>>.swap(fromPos: Int, targetPos: Int) {

@@ -19,10 +19,10 @@ import java.io.Serializable
 data class RouletteItem(
     @PrimaryKey(autoGenerate = true)
     @NonNull
-    val seq: Int,
+    val seq: Int = 0,
 
-    val rouletteSeq: Int,
+    var rouletteSeq: Int = 0,
 
     //@Embedded //field가 object인 경우 선언
     val name: String
-): Serializable
+):Serializable

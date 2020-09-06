@@ -12,17 +12,18 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.roulette.R
-import com.example.roulette.adapter.ItemMoveSwifeCallback
+import com.example.roulette.adapter.ItemMoveSwipeCallback
 import com.example.roulette.adapter.SettingItemAdpater
 import com.example.roulette.customview.MyActionBar
 import com.example.roulette.databinding.ActivitySettingItemBinding
-import com.example.roulette.view.dialog.AddItemDialog
+import com.example.roulette.view.dialog.EditDialog
+import com.example.roulette.view.dialog.MessageDialog
 import com.example.roulette.viewmodel.SettingItemViewModel
 import kotlinx.android.synthetic.main.activity_setting_item.*
 
 class SettingItemActivity : AppCompatActivity(),
-    ItemMoveSwifeCallback.ItemTouchHelperAdapter,
-    ItemMoveSwifeCallback.ItemDragListener{
+    ItemMoveSwipeCallback.ItemTouchHelperAdapter,
+    ItemMoveSwipeCallback.ItemDragListener{
     companion object {
         fun intent(context: Context) = Intent(context, SettingItemActivity::class.java)
     }
@@ -38,7 +39,7 @@ class SettingItemActivity : AppCompatActivity(),
             this,
             R.layout.activity_setting_item
         )
-        viewModel = ViewModelProvider(this).get(SettingItemViewModel::class.java)
+        viewModel = ViewModelProvider(this, ViewModelProvider.AndroidViewModelFactory(application)).get(SettingItemViewModel::class.java)
         binding.lifecycleOwner = this
         binding.viewModel = viewModel
 
@@ -51,7 +52,7 @@ class SettingItemActivity : AppCompatActivity(),
             setActionBar("항목 구성")
         }
 
-        val callback: ItemTouchHelper.Callback = ItemMoveSwifeCallback(this)
+        val callback: ItemTouchHelper.Callback = ItemMoveSwipeCallback(this)
         touchHelper = ItemTouchHelper(callback)
         touchHelper!!.attachToRecyclerView(itemList)
 
@@ -65,9 +66,12 @@ class SettingItemActivity : AppCompatActivity(),
         })
 
         viewModel.itemDialog.observe(this, Observer {
-            AddItemDialog(this) { itemName ->
+            EditDialog(this) { itemName ->
                 viewModel.addNewItem(itemName)
-            }.show()
+            }.setTitle("추가")
+               .setYesContent("추가")
+                .setNoContent("취소")
+                .show()
         })
 
         viewModel.items.observe(this, Observer {
@@ -75,7 +79,17 @@ class SettingItemActivity : AppCompatActivity(),
         })
 
         viewModel.startRoulette.observe(this, Observer {
-            startActivity(MainActivity.intent(this, it))
+            MessageDialog(this) { save ->
+                if(save) {
+                    viewModel.saveRouletteData()
+                }
+
+                startActivity(MainActivity.intent(this, it))
+            }.setTitle("저장")
+                .setMessage("룰렛을 저장하시겠습니까?")
+                .setYesContent("저장")
+                .setNoContent("저장하지 않고 시작")
+                .show()
         })
     }
 

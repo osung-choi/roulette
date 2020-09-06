@@ -3,7 +3,7 @@ package com.example.roulette.adapter
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 
-class ItemMoveSwifeCallback(
+class ItemMoveSwipeCallback(
     itemTouchHelperAdapter: ItemTouchHelperAdapter
 ): ItemTouchHelper.Callback() {
     private val itemTouchHelperAdapter = itemTouchHelperAdapter

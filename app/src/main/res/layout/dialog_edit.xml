@@ -11,7 +11,6 @@
         android:layout_height="wrap_content"
         android:padding="10dp"
         android:textSize="16sp"
-        android:text="추가"
         android:textColor="@android:color/black"
         android:gravity="center"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -56,7 +55,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="취소"
             style="@style/style_left_button"/>
 
         <Button
@@ -64,7 +62,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="추가"
             android:layout_marginLeft="5dp"
             style="@style/style_right_button"/>
     </LinearLayout>
