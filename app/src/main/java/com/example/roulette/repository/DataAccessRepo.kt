@@ -28,4 +28,8 @@ class DataAccessRepo(
         db.rouletteDao()
             .delete(item)
 
+    fun selectRouletteItem(rouletteSeq: Int) =
+        db.rouletteItemDAO()
+            .selectRouletteItem(rouletteSeq)
+
 }

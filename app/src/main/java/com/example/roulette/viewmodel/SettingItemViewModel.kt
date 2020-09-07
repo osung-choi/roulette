@@ -9,6 +9,7 @@ import com.example.roulette.repository.*
 import com.example.roulette.repository.database.entity.Roulette
 import com.example.roulette.repository.database.entity.RouletteItem
 import io.reactivex.Observable
+import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 
@@ -73,15 +74,16 @@ class SettingItemViewModel(application: Application) : AndroidViewModel(applicat
                 .subscribeOn(Schedulers.io())
                 .map { dbRepo.insertRoulette(it) }
                 .map { seq ->
-                    val list = setRouletteSeq(seq)
+                    val list = setRouletteItemSeq(seq)
                     dbRepo.insertRouletteItems(list)
                 }.subscribe()
         )
     }
 
-    private fun setRouletteSeq(seq: Long): ArrayList<RouletteItem> {
+    private fun setRouletteItemSeq(seq: Long): ArrayList<RouletteItem> {
         val list = _items.value!!
         list.forEach {
+            it.seq = 0
             it.rouletteSeq = seq.toInt()
         }
 
@@ -91,6 +93,17 @@ class SettingItemViewModel(application: Application) : AndroidViewModel(applicat
     override fun onCleared() {
         super.onCleared()
         if(!compositeDisposable.isDisposed) compositeDisposable.dispose()
+    }
+
+    fun selectRouletteItem(seq: Int) {
+        compositeDisposable.add(
+            dbRepo.selectRouletteItem(seq)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe {
+                    _items.addAll(it)
+                }
+        )
     }
 }
 

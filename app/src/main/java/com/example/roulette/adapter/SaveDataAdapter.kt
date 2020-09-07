@@ -8,11 +8,19 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.roulette.databinding.AdapterSaveDataBinding
 import com.example.roulette.repository.database.entity.Roulette
 
-class SaveDataAdapter: RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class SaveDataAdapter(
+    private val itemClick : (item:Roulette) -> Unit
+): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     val diffUtil = AsyncListDiffer(this, DiffCallback())
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        return MyViewHolder(AdapterSaveDataBinding.inflate(LayoutInflater.from(parent.context), parent, false))
+        return MyViewHolder(
+            AdapterSaveDataBinding.inflate(
+                LayoutInflater.from(parent.context),
+                parent,
+                false
+            )
+        )
     }
 
     override fun getItemCount() = diffUtil.currentList.size
@@ -23,17 +31,21 @@ class SaveDataAdapter: RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private inner class MyViewHolder(
         private val binding: AdapterSaveDataBinding
-    ): RecyclerView.ViewHolder(binding.root) {
+    ) : RecyclerView.ViewHolder(binding.root) {
         fun bind(item: Roulette) {
             binding.item = item
+
+            binding.root.setOnClickListener {
+                itemClick.invoke(item)
+            }
         }
     }
 
-    private inner class DiffCallback: DiffUtil.ItemCallback<Roulette>() {
-        override fun areItemsTheSame(oldItem: Roulette, newItem: Roulette)
-                = oldItem.seq == newItem.seq
+    private inner class DiffCallback : DiffUtil.ItemCallback<Roulette>() {
+        override fun areItemsTheSame(oldItem: Roulette, newItem: Roulette) =
+            oldItem.seq == newItem.seq
 
-        override fun areContentsTheSame(oldItem: Roulette, newItem: Roulette)
-                = oldItem.title == newItem.title
+        override fun areContentsTheSame(oldItem: Roulette, newItem: Roulette) =
+            oldItem.title == newItem.title
     }
 }

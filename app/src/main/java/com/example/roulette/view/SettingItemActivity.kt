@@ -5,6 +5,7 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
+import androidx.annotation.NonNull
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -16,6 +17,7 @@ import com.example.roulette.adapter.ItemMoveSwipeCallback
 import com.example.roulette.adapter.SettingItemAdpater
 import com.example.roulette.customview.MyActionBar
 import com.example.roulette.databinding.ActivitySettingItemBinding
+import com.example.roulette.repository.database.entity.Roulette
 import com.example.roulette.view.dialog.EditDialog
 import com.example.roulette.view.dialog.MessageDialog
 import com.example.roulette.viewmodel.SettingItemViewModel
@@ -25,12 +27,20 @@ class SettingItemActivity : AppCompatActivity(),
     ItemMoveSwipeCallback.ItemTouchHelperAdapter,
     ItemMoveSwipeCallback.ItemDragListener{
     companion object {
+        private const val INTENT_ROULETTE_DATA = "intent_roulette_data"
         fun intent(context: Context) = Intent(context, SettingItemActivity::class.java)
+
+        fun intent(context: Context, roulette: Roulette) : Intent {
+            return Intent(context, SettingItemActivity::class.java)
+                .putExtra(INTENT_ROULETTE_DATA, roulette)
+        }
     }
 
+    private lateinit var actionBar: MyActionBar
     private lateinit var viewModel: SettingItemViewModel
     private val mAdapter = SettingItemAdpater(this)
     private var touchHelper: ItemTouchHelper? = null
+    private var changeItem = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -45,10 +55,16 @@ class SettingItemActivity : AppCompatActivity(),
 
         initUi()
         initEvent()
+
+        intent.getSerializableExtra(INTENT_ROULETTE_DATA)?.let {
+            it as Roulette
+            viewModel.selectRouletteItem(it.seq)
+            actionBar.setTitle(it.title)
+        }
     }
 
     private fun initUi() {
-        MyActionBar(this, supportActionBar).run {
+        actionBar = MyActionBar(this, supportActionBar).apply {
             setActionBar("항목 구성")
         }
 
@@ -79,17 +95,22 @@ class SettingItemActivity : AppCompatActivity(),
         })
 
         viewModel.startRoulette.observe(this, Observer {
-            MessageDialog(this) { save ->
-                if(save) {
-                    viewModel.saveRouletteData()
-                }
+            if(changeItem) {
+                MessageDialog(this) { save ->
+                    if(save) {
+                        viewModel.saveRouletteData()
+                    }
 
+                    startActivity(MainActivity.intent(this, it))
+                }.setTitle("저장")
+                    .setMessage("룰렛을 저장하시겠습니까?")
+                    .setYesContent("저장")
+                    .setNoContent("저장하지 않고 시작")
+                    .show()
+            }else {
                 startActivity(MainActivity.intent(this, it))
-            }.setTitle("저장")
-                .setMessage("룰렛을 저장하시겠습니까?")
-                .setYesContent("저장")
-                .setNoContent("저장하지 않고 시작")
-                .show()
+
+            }
         })
     }
 

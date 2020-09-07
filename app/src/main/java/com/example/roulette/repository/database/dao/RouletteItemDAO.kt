@@ -2,9 +2,13 @@ package com.example.roulette.repository.database.dao
 
 import androidx.room.*
 import com.example.roulette.repository.database.entity.RouletteItem
+import io.reactivex.Maybe
 
 @Dao
 interface RouletteItemDAO {
+    @Query("select * from RouletteItem where rouletteSeq = :rouletteSeq")
+    fun selectRouletteItem(rouletteSeq: Int): Maybe<List<RouletteItem>>
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertAll(items: List<RouletteItem>)
 

@@ -48,7 +48,9 @@ class SavedDataActivity : AppCompatActivity(),
         }
 
         listSaveData.layoutManager = LinearLayoutManager(this)
-        listSaveData.adapter = SaveDataAdapter()
+        listSaveData.adapter = SaveDataAdapter {
+            startActivity(SettingItemActivity.intent(this, it))
+        }
 
         val callback: ItemTouchHelper.Callback = ItemMoveSwipeCallback(this)
         val touchHelper = ItemTouchHelper(callback)

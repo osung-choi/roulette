@@ -19,7 +19,7 @@ import java.io.Serializable
 data class RouletteItem(
     @PrimaryKey(autoGenerate = true)
     @NonNull
-    val seq: Int = 0,
+    var seq: Int = 0,
 
     var rouletteSeq: Int = 0,
 
