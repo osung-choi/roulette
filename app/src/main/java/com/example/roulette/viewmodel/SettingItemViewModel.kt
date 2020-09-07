@@ -1,21 +1,17 @@
 package com.example.roulette.viewmodel
 
 import android.app.Application
-import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.roulette.SingleLiveEvent
 import com.example.roulette.repository.*
-import com.example.roulette.repository.database.RouletteDatabase
 import com.example.roulette.repository.database.entity.Roulette
 import com.example.roulette.repository.database.entity.RouletteItem
 import io.reactivex.Observable
-import io.reactivex.Single
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
-import java.util.*
-import kotlin.collections.ArrayList
+
 
 class SettingItemViewModel(application: Application) : AndroidViewModel(application) {
     private val _items = MutableLiveData<ArrayList<RouletteItem>>().apply {
@@ -73,9 +69,9 @@ class SettingItemViewModel(application: Application) : AndroidViewModel(applicat
         val saveRoulette = Roulette(0, title)
 
         compositeDisposable.add(
-            Observable.just(1)
+            Observable.just(saveRoulette)
                 .subscribeOn(Schedulers.io())
-                .map { dbRepo.insertRoulette(saveRoulette) }
+                .map { dbRepo.insertRoulette(it) }
                 .map { seq ->
                     val list = setRouletteSeq(seq)
                     dbRepo.insertRouletteItems(list)
@@ -94,8 +90,7 @@ class SettingItemViewModel(application: Application) : AndroidViewModel(applicat
 
     override fun onCleared() {
         super.onCleared()
-
-        compositeDisposable.dispose()
+        if(!compositeDisposable.isDisposed) compositeDisposable.dispose()
     }
 }
 

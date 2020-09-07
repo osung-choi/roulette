@@ -11,6 +11,7 @@ class DataAccessRepo(
     private val db by lazy {
         RouletteDatabase.getInstance(context)
     }
+
     fun insertRoulette(item: Roulette) =
         db.rouletteDao()
             .insert(item)
@@ -18,5 +19,13 @@ class DataAccessRepo(
     fun insertRouletteItems(list: ArrayList<RouletteItem>) =
         db.rouletteItemDAO()
             .insertAll(list)
+
+    fun selectAllRoulette() =
+        db.rouletteDao()
+            .selectAll()
+
+    fun deleteRoulette(item: Roulette) =
+        db.rouletteDao()
+            .delete(item)
 
 }

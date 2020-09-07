@@ -42,6 +42,13 @@ fun<T> MutableLiveData<ArrayList<T>>.itemDelete(pos: Int) {
     }
 }
 
+fun<T> MutableLiveData<ArrayList<T>>.addAll(items: List<T>) {
+    val list = this.value ?: arrayListOf()
+    list.clear()
+    list.addAll(items)
+    this.value = list
+}
+
 operator fun<T> MutableLiveData<ArrayList<T>>.plusAssign(item: T) {
     val list = this.value ?: arrayListOf()
     list.add(item)

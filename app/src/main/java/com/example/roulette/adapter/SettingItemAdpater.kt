@@ -54,7 +54,7 @@ class SettingItemAdpater(
     }
 
 
-    inner class DiffCallback: DiffUtil.ItemCallback<RouletteItem>() {
+    private inner class DiffCallback: DiffUtil.ItemCallback<RouletteItem>() {
         override fun areItemsTheSame(oldItem: RouletteItem, newItem: RouletteItem)
                 = oldItem.seq == newItem.seq
 

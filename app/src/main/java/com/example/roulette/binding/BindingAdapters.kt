@@ -2,7 +2,10 @@ package com.example.roulette.binding
 
 import android.view.View
 import androidx.databinding.BindingAdapter
+import androidx.recyclerview.widget.RecyclerView
+import com.example.roulette.adapter.SaveDataAdapter
 import com.example.roulette.customview.RouletteView
+import com.example.roulette.repository.database.entity.Roulette
 import com.example.roulette.repository.database.entity.RouletteItem
 
 object BindingAdapters {
@@ -24,5 +27,16 @@ object BindingAdapters {
     fun setVisible(view: View, isVisible: Boolean) {
         if(isVisible) view.visibility = View.VISIBLE
         else view.visibility = View.GONE
+    }
+
+    @JvmStatic
+    @BindingAdapter("bindSaveData")
+    fun setVisible(recyclerView: RecyclerView, items: List<Roulette>) {
+        val adapter = recyclerView.adapter as SaveDataAdapter
+
+        arrayListOf<Roulette>().run {
+            this.addAll(items)
+            adapter.diffUtil.submitList(this)
+        }
     }
 }

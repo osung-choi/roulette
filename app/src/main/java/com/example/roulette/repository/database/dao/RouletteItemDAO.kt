@@ -2,7 +2,6 @@ package com.example.roulette.repository.database.dao
 
 import androidx.room.*
 import com.example.roulette.repository.database.entity.RouletteItem
-import io.reactivex.Maybe
 
 @Dao
 interface RouletteItemDAO {

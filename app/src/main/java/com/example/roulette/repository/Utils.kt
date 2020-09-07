@@ -12,7 +12,7 @@ object Utils {
     fun makeRouletteTitle(items: ArrayList<RouletteItem>): String {
         val title = StringBuilder()
         for(i in 0 until MIN_ITEM_COUNT) {
-            title.append(items[i])
+            title.append(items[i].name)
                 .append(",")
         }
 

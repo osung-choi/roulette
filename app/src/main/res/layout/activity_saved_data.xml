@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+    <data>
+        <variable
+            name="viewModel"
+            type="com.example.roulette.viewmodel.SavedDataViewModel"/>
+    </data>
+    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".view.SavedDataActivity">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/listSaveData"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            bindSaveData="@{viewModel.items}"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

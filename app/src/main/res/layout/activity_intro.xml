@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".view.LoadActivity">
+    tools:context=".view.IntroActivity">
 
 
     <LinearLayout
@@ -17,7 +17,7 @@
         app:layout_constraintBottom_toBottomOf="parent">
 
         <Button
-            android:id="@+id/loadSaveRoulette"
+            android:id="@+id/btnSaveRoulette"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="20dp"
@@ -25,7 +25,7 @@
             style="@style/style_default_button"/>
 
         <Button
-            android:id="@+id/loadNewRoulette"
+            android:id="@+id/btnNewRoulette"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="새로운 룰렛 생성하기"
