@@ -6,6 +6,9 @@ import io.reactivex.Maybe
 
 @Dao
 interface RouletteItemDAO {
+    @Query("select max(seq) from RouletteItem")
+    fun selectMaxSeq(): Maybe<Int>
+
     @Query("select * from RouletteItem where rouletteSeq = :rouletteSeq")
     fun selectRouletteItem(rouletteSeq: Int): Maybe<List<RouletteItem>>
 

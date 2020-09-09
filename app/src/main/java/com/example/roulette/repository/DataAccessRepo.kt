@@ -32,4 +32,8 @@ class DataAccessRepo(
         db.rouletteItemDAO()
             .selectRouletteItem(rouletteSeq)
 
+    fun selectMaxItemSeq() =
+        db.rouletteItemDAO()
+            .selectMaxSeq()
+
 }

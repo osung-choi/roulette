@@ -5,7 +5,6 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
-import androidx.annotation.NonNull
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -40,7 +39,7 @@ class SettingItemActivity : AppCompatActivity(),
     private lateinit var viewModel: SettingItemViewModel
     private val mAdapter = SettingItemAdpater(this)
     private var touchHelper: ItemTouchHelper? = null
-    private var changeItem = true
+    private var updateItem = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -95,7 +94,7 @@ class SettingItemActivity : AppCompatActivity(),
         })
 
         viewModel.startRoulette.observe(this, Observer {
-            if(changeItem) {
+            if(updateItem) {
                 MessageDialog(this) { save ->
                     if(save) {
                         viewModel.saveRouletteData()
@@ -111,6 +110,10 @@ class SettingItemActivity : AppCompatActivity(),
                 startActivity(MainActivity.intent(this, it))
 
             }
+        })
+
+        viewModel.updateItems.observe(this, Observer {
+            updateItem = it
         })
     }
 

@@ -1,6 +1,7 @@
 package com.example.roulette.repository
 
 import androidx.lifecycle.MutableLiveData
+import com.example.roulette.repository.database.entity.RouletteItem
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -60,5 +61,16 @@ operator fun<T> MutableLiveData<ArrayList<T>>.minusAssign(index: Int) {
         val list = this.value!!
         list.removeAt(index)
         this.value = list
+    }
+}
+
+fun ArrayList<RouletteItem>.nameNotEquals(list: ArrayList<RouletteItem>): Boolean {
+    return if(this.size == list.size) {
+        for(i in 0 until list.size) {
+            if(this[i] != list[i]) return true
+        }
+        false
+    }else {
+        true
     }
 }

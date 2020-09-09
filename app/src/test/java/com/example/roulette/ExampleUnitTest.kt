@@ -12,6 +12,24 @@ import org.junit.Assert.*
 class ExampleUnitTest {
     @Test
     fun addition_isCorrect() {
-        assertEquals(4, 2 + 2)
+
+        val a = arrayListOf<MyTest>()
+        val b = arrayListOf<MyTest>()
+
+        a.add(MyTest(0,"가"))
+        a.add(MyTest(1,"나"))
+        a.add(MyTest(2,"다"))
+
+        b.add(MyTest(0,"가"))
+        b.add(MyTest(1,"다"))
+        b.add(MyTest(2,"다"))
+
+
+        assertArrayEquals(a.toArray(), b.toArray())
     }
 }
+
+data class MyTest(
+    val num: Int,
+    val text: String
+)

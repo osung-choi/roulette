@@ -1,17 +1,23 @@
 package com.example.roulette.viewmodel
 
+import android.annotation.SuppressLint
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Observer
 import com.example.roulette.SingleLiveEvent
 import com.example.roulette.repository.*
 import com.example.roulette.repository.database.entity.Roulette
 import com.example.roulette.repository.database.entity.RouletteItem
+import io.reactivex.Maybe
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.functions.BiFunction
 import io.reactivex.schedulers.Schedulers
+import java.util.*
+import kotlin.collections.ArrayList
 
 
 class SettingItemViewModel(application: Application) : AndroidViewModel(application) {
@@ -24,6 +30,9 @@ class SettingItemViewModel(application: Application) : AndroidViewModel(applicat
     private val _itemDialog = SingleLiveEvent<Any>()
     val itemDialog: LiveData<Any> = _itemDialog
 
+    private val _updateItems = MutableLiveData<Boolean>().apply { this.value = false }
+    val updateItems: LiveData<Boolean> = _updateItems
+
     private val _startRoulette = SingleLiveEvent<ArrayList<RouletteItem>>()
     val startRoulette: LiveData<ArrayList<RouletteItem>> = _startRoulette
 
@@ -31,7 +40,7 @@ class SettingItemViewModel(application: Application) : AndroidViewModel(applicat
     val error: LiveData<String> = _error
 
     private val compositeDisposable = CompositeDisposable()
-
+    private val backupItems = arrayListOf<RouletteItem>()
     private var idx = 0
 
     fun addItemClick() {
@@ -51,18 +60,21 @@ class SettingItemViewModel(application: Application) : AndroidViewModel(applicat
     }
 
     fun addNewItem(name: String) {
-        RouletteItem(idx++,0, name)
+        RouletteItem(++idx,0, name)
             .run {
             _items += this
         }
+        compareBackupItem()
     }
 
     fun onItemMove(fromPos: Int, targetPos: Int) {
         _items.swap(fromPos, targetPos)
+        compareBackupItem()
     }
 
     fun onItemDismiss(pos: Int) {
         _items.itemDelete(pos)
+        compareBackupItem()
     }
 
     fun saveRouletteData() {
@@ -80,6 +92,27 @@ class SettingItemViewModel(application: Application) : AndroidViewModel(applicat
         )
     }
 
+    fun selectRouletteItem(seq: Int) {
+        val selectList =  dbRepo.selectRouletteItem(seq)
+        val selectMaxSeq = dbRepo.selectMaxItemSeq()
+
+        compositeDisposable.add(
+            selectList.zipWith(selectMaxSeq, BiFunction { list: List<RouletteItem>, maxSeq: Int ->
+                idx = maxSeq
+                list
+            }).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe {
+                    backupItems.addAll(it)
+                    _items.addAll(it)
+                }
+        )
+    }
+
+    private fun compareBackupItem() {
+        _updateItems.value = backupItems.nameNotEquals(_items.value!!)
+    }
+
     private fun setRouletteItemSeq(seq: Long): ArrayList<RouletteItem> {
         val list = _items.value!!
         list.forEach {
@@ -95,15 +128,6 @@ class SettingItemViewModel(application: Application) : AndroidViewModel(applicat
         if(!compositeDisposable.isDisposed) compositeDisposable.dispose()
     }
 
-    fun selectRouletteItem(seq: Int) {
-        compositeDisposable.add(
-            dbRepo.selectRouletteItem(seq)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe {
-                    _items.addAll(it)
-                }
-        )
-    }
+
 }
 
