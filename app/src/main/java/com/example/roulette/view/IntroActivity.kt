@@ -22,5 +22,9 @@ class IntroActivity : AppCompatActivity() {
         btnNewRoulette.setOnClickListener {
             startActivity(SettingItemActivity.intent(this))
         }
+
+        btnSlotMachine.setOnClickListener {
+            startActivity(SlotMachineActivity.intent(this))
+        }
     }
 }

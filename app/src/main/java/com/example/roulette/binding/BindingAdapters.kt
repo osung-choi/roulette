@@ -3,6 +3,7 @@ package com.example.roulette.binding
 import android.view.View
 import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.example.myslotmachine.SlotMachineView
 import com.example.roulette.adapter.SaveDataAdapter
 import com.example.roulette.customview.RouletteView
 import com.example.roulette.repository.database.entity.Roulette
@@ -37,6 +38,20 @@ object BindingAdapters {
         arrayListOf<Roulette>().run {
             this.addAll(items)
             adapter.diffUtil.submitList(this)
+        }
+    }
+
+    @JvmStatic
+    @BindingAdapter("setSlotMachineItem")
+    fun setSlotMachineItem(slotMachineView: SlotMachineView, list: ArrayList<String>) {
+        slotMachineView.setSlotList(list)
+    }
+
+    @JvmStatic
+    @BindingAdapter("setSlotResultCallback")
+    fun setSlotResultCallback(slotMachineView: SlotMachineView, callback: (String) -> Unit) {
+        slotMachineView.setResultCallbackListener {
+            callback.invoke(it)
         }
     }
 }

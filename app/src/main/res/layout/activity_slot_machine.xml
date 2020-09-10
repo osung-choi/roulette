@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+    <data>
+        <variable
+            name="viewModel"
+            type="com.example.roulette.viewmodel.SlotMachineViewModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".view.SlotMachineActivity">
+
+        <com.example.myslotmachine.SlotMachineView
+            android:id="@+id/slotMachineView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:slotCount="7"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/startSlotMachine"
+            setSlotMachineItem="@{viewModel.slotItem}"
+            setSlotResultCallback="@{() -> viewModel.resultCallbackListener()}"/>
+
+        <Button
+            android:id="@+id/startSlotMachine"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/button_background_default"
+            android:layout_margin="10dp"
+            android:text="슬롯 머신 시작"
+            android:onClick="@{() -> viewModel.startSlotMachine()}"
+            style="@style/style_default_button"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

@@ -10,7 +10,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".view.SavedDataActivity"></activity>
+        <activity android:name=".view.SlotMachineActivity"></activity>
+        <activity android:name=".view.SavedDataActivity" />
         <activity android:name=".view.SettingItemActivity" />
         <activity android:name=".view.IntroActivity">
             <intent-filter>
