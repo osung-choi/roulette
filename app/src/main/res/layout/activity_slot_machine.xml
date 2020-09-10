@@ -21,7 +21,7 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toTopOf="@id/startSlotMachine"
             setSlotMachineItem="@{viewModel.slotItem}"
-            setSlotResultCallback="@{() -> viewModel.resultCallbackListener()}"/>
+            setSlotResultCallback="@{viewModel.resultCallbackListener()}"/>
 
         <Button
             android:id="@+id/startSlotMachine"

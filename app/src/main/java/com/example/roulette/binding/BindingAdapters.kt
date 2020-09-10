@@ -50,8 +50,6 @@ object BindingAdapters {
     @JvmStatic
     @BindingAdapter("setSlotResultCallback")
     fun setSlotResultCallback(slotMachineView: SlotMachineView, callback: (String) -> Unit) {
-        slotMachineView.setResultCallbackListener {
-            callback.invoke(it)
-        }
+        slotMachineView.setResultCallbackListener(callback)
     }
 }

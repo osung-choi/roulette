@@ -18,13 +18,9 @@ class SlotMachineViewModel: ViewModel() {
     private val _startMachine = SingleLiveEvent<Any>()
     val startMachine : LiveData<Any> = _startMachine
 
-    fun resultCallbackListener() : (String) -> Unit {
-        return {
-            _result.value = it
-
-        }
+    fun resultCallbackListener(): (String) -> Unit = {
+        _result.value = it
     }
-
     fun startSlotMachine() {
         _startMachine.value = Any()
     }
