@@ -20,7 +20,7 @@ object BindingAdapters {
     @JvmStatic
     @BindingAdapter("angle", "resultListener")
     fun startRotate(rouletteView: RouletteView, angle: Float, listener: (String) -> Unit) {
-        rouletteView.startRatate(angle, listener)
+        rouletteView.startDefaultRotate(angle, listener)
     }
 
     @JvmStatic
@@ -43,8 +43,13 @@ object BindingAdapters {
 
     @JvmStatic
     @BindingAdapter("setSlotMachineItem")
-    fun setSlotMachineItem(slotMachineView: SlotMachineView, list: ArrayList<String>) {
-        slotMachineView.setSlotList(list)
+    fun setSlotMachineItem(slotMachineView: SlotMachineView, list: ArrayList<RouletteItem>) {
+        val nameList = arrayListOf<String>().apply {
+            list.forEach {
+                add(it.name)
+            }
+        }
+        slotMachineView.setSlotList(nameList)
     }
 
     @JvmStatic

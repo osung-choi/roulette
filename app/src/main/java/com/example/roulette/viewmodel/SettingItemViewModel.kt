@@ -1,22 +1,19 @@
 package com.example.roulette.viewmodel
 
-import android.annotation.SuppressLint
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Observer
+import com.example.roulette.R
 import com.example.roulette.SingleLiveEvent
 import com.example.roulette.repository.*
 import com.example.roulette.repository.database.entity.Roulette
 import com.example.roulette.repository.database.entity.RouletteItem
-import io.reactivex.Maybe
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.functions.BiFunction
 import io.reactivex.schedulers.Schedulers
-import java.util.*
 import kotlin.collections.ArrayList
 
 
@@ -30,14 +27,16 @@ class SettingItemViewModel(application: Application) : AndroidViewModel(applicat
     private val _itemDialog = SingleLiveEvent<Any>()
     val itemDialog: LiveData<Any> = _itemDialog
 
-    private val _updateItems = MutableLiveData<Boolean>().apply { this.value = false }
-    val updateItems: LiveData<Boolean> = _updateItems
-
-    private val _startRoulette = SingleLiveEvent<ArrayList<RouletteItem>>()
-    val startRoulette: LiveData<ArrayList<RouletteItem>> = _startRoulette
+    private val _startRoulette = SingleLiveEvent<Pair<Int,ArrayList<RouletteItem>>>()
+    val startRoulette: LiveData<Pair<Int,ArrayList<RouletteItem>>> = _startRoulette
 
     private val _error = MutableLiveData<String>()
     val error: LiveData<String> = _error
+
+    val selectTypeId = MutableLiveData<Int>().apply {
+        value = R.id.rbSelectRoulette
+    }
+    var updateItems = false
 
     private val compositeDisposable = CompositeDisposable()
     private val backupItems = arrayListOf<RouletteItem>()
@@ -53,7 +52,7 @@ class SettingItemViewModel(application: Application) : AndroidViewModel(applicat
 
     fun startClick() {
         if(_items.checkMinSize()) {
-            _startRoulette.value = _items.value
+            _startRoulette.value = Pair(selectTypeId.value!!, _items.value!!)
         }else {
             _error.value = "최소 ${MIN_ITEM_COUNT}개의 아이템을 등록하세요."
         }
@@ -110,7 +109,7 @@ class SettingItemViewModel(application: Application) : AndroidViewModel(applicat
     }
 
     private fun compareBackupItem() {
-        _updateItems.value = backupItems.nameNotEquals(_items.value!!)
+        updateItems = backupItems.nameNotEquals(_items.value!!)
     }
 
     private fun setRouletteItemSeq(seq: Long): ArrayList<RouletteItem> {

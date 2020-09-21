@@ -13,11 +13,35 @@
         android:layout_height="match_parent"
         tools:context=".view.SettingItemActivity">
 
+        <RadioGroup
+            android:id="@+id/rgSelectType"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="5dp"
+            android:gravity="end"
+            android:checkedButton="@={viewModel.selectTypeId}"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <RadioButton
+                android:id="@+id/rbSelectRoulette"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="룰렛"/>
+
+            <RadioButton
+                android:id="@+id/rbSelectSlotMachine"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="슬롯머신"/>
+
+        </RadioGroup>
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/itemList"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/rgSelectType"
             app:layout_constraintBottom_toTopOf="@id/buttonLayout"/>
 
         <LinearLayout

@@ -11,12 +11,17 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.example.roulette.R
 import com.example.roulette.databinding.ActivitySlotMachineBinding
+import com.example.roulette.repository.database.entity.RouletteItem
 import com.example.roulette.viewmodel.SlotMachineViewModel
 import kotlinx.android.synthetic.main.activity_slot_machine.*
 
 class SlotMachineActivity : AppCompatActivity() {
     companion object {
-        fun intent(context: Context) = Intent(context, SlotMachineActivity::class.java)
+        private const val INTENT_ROULETTE_ITEM = "intent_roulette_item"
+
+        fun intent(context: Context, items: ArrayList<RouletteItem>) = Intent(context, SlotMachineActivity::class.java).apply {
+            putExtra(INTENT_ROULETTE_ITEM, items)
+        }
     }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -25,6 +30,11 @@ class SlotMachineActivity : AppCompatActivity() {
         val binding = DataBindingUtil.setContentView<ActivitySlotMachineBinding>(this, R.layout.activity_slot_machine)
         binding.lifecycleOwner = this
         binding.viewModel = viewModel
+
+        (intent.getSerializableExtra(INTENT_ROULETTE_ITEM) as ArrayList<RouletteItem>).also {
+            viewModel.setSlotItem(it)
+        }
+
 
         viewModel.result.observe(this, Observer {
             Toast.makeText(applicationContext, it, Toast.LENGTH_SHORT).show()

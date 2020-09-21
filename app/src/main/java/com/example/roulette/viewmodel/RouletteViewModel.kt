@@ -8,7 +8,7 @@ import com.example.roulette.repository.Utils
 import com.example.roulette.repository.database.entity.RouletteItem
 
 
-class MainViewModel : ViewModel() {
+class RouletteViewModel : ViewModel() {
     private val _menuItem = MutableLiveData<ArrayList<RouletteItem>>()
     val menuItem: LiveData<ArrayList<RouletteItem>> = _menuItem
 

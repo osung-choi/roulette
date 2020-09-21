@@ -8,27 +8,27 @@ import androidx.databinding.DataBindingUtil.setContentView
 import androidx.lifecycle.ViewModelProvider
 import com.example.roulette.R
 import com.example.roulette.customview.MyActionBar
-import com.example.roulette.databinding.ActivityMainBinding
+import com.example.roulette.databinding.ActivityRouletteBinding
 import com.example.roulette.repository.database.entity.RouletteItem
-import com.example.roulette.viewmodel.MainViewModel
+import com.example.roulette.viewmodel.RouletteViewModel
 
-class MainActivity : AppCompatActivity() {
+class RouletteActivity : AppCompatActivity() {
     companion object {
         private const val INTENT_ROULETTE_ITEM = "intent_roulette_item"
-        fun intent(context: Context, items: ArrayList<RouletteItem>) = Intent(context, MainActivity::class.java).apply {
+        fun intent(context: Context, items: ArrayList<RouletteItem>) = Intent(context, RouletteActivity::class.java).apply {
             putExtra(INTENT_ROULETTE_ITEM, items)
         }
     }
 
-    private lateinit var viewModel: MainViewModel
+    private lateinit var viewModel: RouletteViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val binding = setContentView<ActivityMainBinding>(this,
-            R.layout.activity_main
+        val binding = setContentView<ActivityRouletteBinding>(this,
+            R.layout.activity_roulette
         )
-        viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
+        viewModel = ViewModelProvider(this).get(RouletteViewModel::class.java)
         binding.lifecycleOwner = this
         binding.viewModel = viewModel
 

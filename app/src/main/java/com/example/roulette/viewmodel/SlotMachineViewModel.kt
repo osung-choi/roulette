@@ -4,19 +4,24 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.roulette.SingleLiveEvent
+import com.example.roulette.repository.database.entity.RouletteItem
 
 class SlotMachineViewModel: ViewModel() {
-    private val _slotItem = MutableLiveData<ArrayList<String>>().apply {
-        value = arrayListOf("몬스터","면봉","아이패드","애플펜슬","필통","선풍기","모니터","받침대","컵","물통","알약","환풍기","창문","소나기","파티션","휴지")
+    private val _slotItem = MutableLiveData<ArrayList<RouletteItem>>().apply {
+        value = arrayListOf()
     }
 
-    val slotItem: LiveData<ArrayList<String>> = _slotItem
+    val slotItem: LiveData<ArrayList<RouletteItem>> = _slotItem
 
     private val _result = MutableLiveData<String>()
     val result : LiveData<String> = _result
 
     private val _startMachine = SingleLiveEvent<Any>()
     val startMachine : LiveData<Any> = _startMachine
+
+    fun setSlotItem(items: ArrayList<RouletteItem>) {
+        _slotItem.value = items
+    }
 
     fun resultCallbackListener(): (String) -> Unit = {
         _result.value = it

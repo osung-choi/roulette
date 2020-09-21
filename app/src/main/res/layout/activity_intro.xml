@@ -29,15 +29,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="20dp"
-
             android:text="새로운 룰렛 생성하기"
-            style="@style/style_default_button"/>
-
-        <Button
-            android:id="@+id/btnSlotMachine"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="슬롯 머신"
             style="@style/style_default_button"/>
     </LinearLayout>
 

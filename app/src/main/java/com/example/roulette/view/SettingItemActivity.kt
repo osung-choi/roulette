@@ -39,7 +39,6 @@ class SettingItemActivity : AppCompatActivity(),
     private lateinit var viewModel: SettingItemViewModel
     private val mAdapter = SettingItemAdpater(this)
     private var touchHelper: ItemTouchHelper? = null
-    private var updateItem = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -94,26 +93,28 @@ class SettingItemActivity : AppCompatActivity(),
         })
 
         viewModel.startRoulette.observe(this, Observer {
-            if(updateItem) {
+            if(viewModel.updateItems) {
                 MessageDialog(this) { save ->
                     if(save) {
                         viewModel.saveRouletteData()
                     }
 
-                    startActivity(MainActivity.intent(this, it))
+                    when(it.first) {
+                        R.id.rbSelectRoulette -> startActivity(RouletteActivity.intent(this, it.second))
+                        R.id.rbSelectSlotMachine -> startActivity(SlotMachineActivity.intent(this, it.second))
+                    }
                 }.setTitle("저장")
                     .setMessage("룰렛을 저장하시겠습니까?")
                     .setYesContent("저장")
                     .setNoContent("저장하지 않고 시작")
                     .show()
             }else {
-                startActivity(MainActivity.intent(this, it))
+                when(it.first) {
+                    R.id.rbSelectRoulette -> startActivity(RouletteActivity.intent(this, it.second))
+                    R.id.rbSelectSlotMachine -> startActivity(SlotMachineActivity.intent(this, it.second))
+                }
 
             }
-        })
-
-        viewModel.updateItems.observe(this, Observer {
-            updateItem = it
         })
     }
 
