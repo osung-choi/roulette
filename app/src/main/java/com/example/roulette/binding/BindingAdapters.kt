@@ -20,7 +20,8 @@ object BindingAdapters {
     @JvmStatic
     @BindingAdapter("angle", "resultListener")
     fun startRotate(rouletteView: RouletteView, angle: Float, listener: (String) -> Unit) {
-        rouletteView.startDefaultRotate(angle, listener)
+        rouletteView.setEndCallbackListener(listener)
+        rouletteView.startDefaultRotate(angle)
     }
 
     @JvmStatic

@@ -1,18 +1,20 @@
 package com.example.roulette.customview
 
-import android.content.Context
 import android.graphics.*
 import android.util.AttributeSet
 import android.util.Log
 import android.view.MotionEvent
-import android.view.VelocityTracker
 import android.view.View
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.view.animation.RotateAnimation
 import com.example.roulette.R
-import com.example.roulette.repository.Utils
 import com.example.roulette.repository.database.entity.RouletteItem
+import android.content.Context
+import androidx.annotation.AnimRes
+import androidx.annotation.InterpolatorRes
+import com.example.roulette.repository.Utils
+import java.util.*
 import kotlin.math.abs
 import kotlin.math.atan2
 import kotlin.math.cos
@@ -23,21 +25,19 @@ class RouletteView: View, View.OnTouchListener {
     private val sectorPaint = Paint(Paint.ANTI_ALIAS_FLAG)
     private val textPaint = Paint(Paint.ANTI_ALIAS_FLAG)
     private val linePaint = Paint(Paint.ANTI_ALIAS_FLAG)
-    private val initAngle = 10.0
     private var menu = arrayListOf<RouletteItem>()
     private val colors = arrayListOf(context.getColor(R.color.main_color),
         context.getColor(R.color.sub_color),
         context.getColor(R.color.colorAccent))
 
     private var mCurrAngle = 0.0
-    private var mPrevAngle = 0.0
     private var mAddAngle = 0.0
 
-    private var mDirection = false
-    private var lastVelX = 0.0F
-    private var lastVelY = 0.0F
+    private var angleQueue: Queue<Double> = LinkedList()
 
-    private var mVelocityTracker: VelocityTracker? = null
+    private var mDirection = false
+
+    private var endCallback: ((String) -> Unit)? = null
 
     constructor(context: Context?) : super(context)
     constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs)
@@ -74,7 +74,7 @@ class RouletteView: View, View.OnTouchListener {
 
         val count = menu.size
         val theta = (360.toDouble() / count)
-        var temp = 270.toDouble() - initAngle
+        var temp = 270.toDouble()
 
         val rectF = RectF(0F, 0F, width.toFloat(), height.toFloat())
         val rect = Rect(0, 0, width, height)
@@ -103,33 +103,26 @@ class RouletteView: View, View.OnTouchListener {
             if(temp >= 360) {
                 temp -= 360
             }
-
         }
     }
 
-    fun startDefaultRotate(angle: Float, endCallback: (String) -> Unit) {
+    fun setEndCallbackListener(endCallback: (String) -> Unit) {
+        this.endCallback = endCallback
+    }
+
+    fun startDefaultRotate(angle: Float) {
         if(angle == 0F) return
-        val rotateAnimation = RotateAnimation(
-            mAddAngle.toFloat(), -angle,
-            Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f
-        )
+        val rotate = getRotateAnimation(mAddAngle, -angle.toDouble(), android.R.anim.accelerate_decelerate_interpolator, 3000)
 
-        rotateAnimation.interpolator = AnimationUtils.loadInterpolator(
-            this.context,
-            android.R.anim.accelerate_decelerate_interpolator
-        )
-        rotateAnimation.duration = 3000
-        rotateAnimation.isFillEnabled = true
-        rotateAnimation.fillAfter = true
-
-        rotateAnimation.setAnimationListener(object: Animation.AnimationListener {
+        rotate.setAnimationListener(object: Animation.AnimationListener {
             override fun onAnimationRepeat(p0: Animation?) {
 
             }
 
             override fun onAnimationEnd(p0: Animation?) {
-                setResult(angle)?.let {
-                    endCallback.invoke(it)
+                mAddAngle = (360-angle%360).toDouble()
+                setResult(mAddAngle)?.let {
+                    endCallback?.invoke(it)
                 }
             }
 
@@ -137,36 +130,66 @@ class RouletteView: View, View.OnTouchListener {
             }
         })
 
-        this.startAnimation(rotateAnimation)
+        this.startAnimation(rotate)
     }
 
-    private fun setResult(angle: Float): String? {
+    private fun rotate(fromDegrees: Double, toDegrees: Double, duration: Long = 10, callback: ((String) -> Unit)? = null) {
+        val rotate = getRotateAnimation(fromDegrees, toDegrees, android.R.anim.decelerate_interpolator, duration)
+
+        rotate.setAnimationListener(object: Animation.AnimationListener {
+            override fun onAnimationRepeat(animation: Animation?) {
+
+            }
+
+            override fun onAnimationEnd(animation: Animation?) {
+                setOnTouchListener(this@RouletteView)
+
+                mAddAngle = toDegrees
+                mAddAngle = getAbsAngle(mAddAngle)
+
+                setResult(mAddAngle)?.let {
+                    callback?.invoke(it)
+                }
+            }
+
+            override fun onAnimationStart(animation: Animation?) {
+
+            }
+
+        })
+
+        startAnimation(rotate)
+    }
+
+    private fun getRotateAnimation(fromDegrees: Double, toDegrees: Double, @AnimRes @InterpolatorRes id: Int, duration: Long) =
+        RotateAnimation(fromDegrees.toFloat(), toDegrees.toFloat(),
+            RotateAnimation.RELATIVE_TO_SELF, 0.5f,
+            RotateAnimation.RELATIVE_TO_SELF, 0.5f
+        ).apply {
+            interpolator = AnimationUtils.loadInterpolator(
+                context,
+                id
+            )
+
+            this.duration = duration
+            fillAfter = true
+        }
+
+    private fun setResult(angle: Double): String? {
         val count = menu.size
         return if(count > 0) {
-            val randomAngle = angle % 3600 + initAngle
             val theta = 360.toDouble() / count
+            val selectIndex = count - (angle / theta).toInt() - 1
+            Log.d(tag, "angle : $angle")
 
-            val selectIndex = (randomAngle / theta).toInt() % count
             menu[selectIndex].name
+
         }else {
             null
         }
     }
 
-    private fun rotate(fromDegrees: Double, toDegrees: Double) {
-        val rotate = RotateAnimation(
-            fromDegrees.toFloat(), toDegrees.toFloat(),
-            RotateAnimation.RELATIVE_TO_SELF, 0.5f,
-            RotateAnimation.RELATIVE_TO_SELF, 0.5f
-        )
-
-        rotate.duration = 10
-        rotate.fillAfter = true
-
-        startAnimation(rotate)
-    }
-
-    private fun getAbsAngle(angle: Double) = (angle + 360) % 360
+    private fun getAbsAngle(angle: Double) = (angle % 360 + 360) % 360
 
     private fun isDirection(prevAngle: Double, currAngle: Double) =
         if(abs(prevAngle-currAngle) < 300 && prevAngle < currAngle) false
@@ -183,74 +206,63 @@ class RouletteView: View, View.OnTouchListener {
         when (event.action) {
             MotionEvent.ACTION_DOWN -> {
                 mCurrAngle = Math.toDegrees(atan2(x - centerOfWidth.toDouble(),centerOfHeight - y.toDouble()))
-                mCurrAngle = getAbsAngle(mCurrAngle)
-
-                mVelocityTracker?.clear()
-                mVelocityTracker = mVelocityTracker ?: VelocityTracker.obtain()
-                mVelocityTracker?.addMovement(event)
             }
             MotionEvent.ACTION_MOVE -> {
-                mPrevAngle = mCurrAngle
+                val mPrevAngle = mCurrAngle
                 mCurrAngle = Math.toDegrees(atan2(x - centerOfWidth.toDouble(), centerOfHeight - y.toDouble()))
-                mCurrAngle = getAbsAngle(mCurrAngle)
 
-                rotate(mAddAngle, mAddAngle + mCurrAngle - mPrevAngle)
+                var speedAngle = getAbsAngle(mCurrAngle - mPrevAngle)
+                rotate(mAddAngle, mAddAngle + speedAngle)
 
-                mAddAngle += mCurrAngle - mPrevAngle
+                mAddAngle += speedAngle
                 mAddAngle = getAbsAngle(mAddAngle)
 
                 mDirection = isDirection(mPrevAngle, mCurrAngle)
 
-                mVelocityTracker?.let {
-                    val pointerId: Int = event.getPointerId(event.actionIndex)
-                    it.addMovement(event)
-                    it.computeCurrentVelocity(1000)
-                    lastVelX = it.getXVelocity(pointerId)
-                    lastVelY = it.getYVelocity(pointerId)
-                }
+                if(speedAngle > 0 && mDirection) speedAngle -= 360
+                else if(speedAngle < 0 && !mDirection) speedAngle += 360
+
+                angleQueue.checkAdd(speedAngle)
             }
             MotionEvent.ACTION_UP -> {
-                mVelocityTracker?.recycle()
-                mVelocityTracker = null
+                setOnTouchListener(null)
+                val avrAngle = angleQueue.average()
 
-                Log.d(tag, "direction: $mDirection , velX : $lastVelX , velY : $lastVelY")
+                if(mDirection) {
+                    var rotateAngle: Double
 
-                val adbVel = abs(lastVelX) + abs(lastVelY)
-                if(adbVel < 2500) {
+                    val power = when {
+                        abs(avrAngle) < 10 -> 100
+                        abs(avrAngle) < 15 -> 250
+                        abs(avrAngle) < 20 -> 400
+                        else -> 600
+                    }.also {
+                        rotateAngle = (avrAngle * it)
+                        if(it != 100) {
+                            rotateAngle -= (Utils.getRandom(360))
+                        }
+                    }
 
-                }else if(adbVel >= 2500 && adbVel < 12000) {
+                    rotate(mAddAngle, mAddAngle + rotateAngle, (10 * power).toLong()) {
+                        if(abs(avrAngle) >= 10) endCallback?.invoke(it)
+                    }
 
                 }else {
-                    
+                    val rotateAngle = avrAngle * 50
+                    rotate(mAddAngle, mAddAngle + rotateAngle, (10 * 100).toLong())
                 }
+
+                angleQueue.clear()
             }
         }
         return true
-//        when(event.action) {
-//            MotionEvent.ACTION_DOWN -> {
-//                mVelocityTracker?.clear()
-//                mVelocityTracker = mVelocityTracker ?: VelocityTracker.obtain()
-//                mVelocityTracker?.addMovement(event)
-//            }
-//            MotionEvent.ACTION_MOVE -> {
-//                mVelocityTracker?.let {
-//                    val pointerId: Int = event.getPointerId(event.actionIndex)
-//                    it.addMovement(event)
-//
-//                    it.computeCurrentVelocity(1000)
-//                    val velX = it.getXVelocity(pointerId)
-//                    val velY = it.getYVelocity(pointerId)
-//
-//                    Log.d(tag, "X : $velX , Y : $velY")
-//                }
-//            }
-//
-//            MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
-//                mVelocityTracker?.recycle()
-//                mVelocityTracker = null
-//            }
-//        }
-//
-//        return true
+    }
+
+    private fun <T> Queue<T>.checkAdd(element: T) {
+        if(size > 8) {
+            poll()
+        }
+
+        add(element)
     }
 }
