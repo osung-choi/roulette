@@ -1,7 +1,8 @@
 package com.example.roulette.repository
 
+import android.content.Context
+import android.util.TypedValue
 import com.example.roulette.repository.database.entity.RouletteItem
-import java.lang.StringBuilder
 
 object Utils {
     fun getRandom(maxNumber: Int): Int {
@@ -24,4 +25,7 @@ object Utils {
 
         return title.toString()
     }
+
+    fun dpToPx(context: Context, dp: Int) =
+        TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp.toFloat(), context.resources.displayMetrics).toInt()
 }

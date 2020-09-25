@@ -11,6 +11,9 @@ import android.view.animation.RotateAnimation
 import com.example.roulette.R
 import com.example.roulette.repository.database.entity.RouletteItem
 import android.content.Context
+import android.text.Layout
+import android.view.LayoutInflater
+import android.widget.RelativeLayout
 import androidx.annotation.AnimRes
 import androidx.annotation.InterpolatorRes
 import com.example.roulette.repository.Utils
@@ -23,6 +26,7 @@ import kotlin.math.sin
 class RouletteView: View, View.OnTouchListener {
     private val tag = "RouletteView"
     private val sectorPaint = Paint(Paint.ANTI_ALIAS_FLAG)
+    private val arrowPaint = Paint(Paint.ANTI_ALIAS_FLAG)
     private val textPaint = Paint(Paint.ANTI_ALIAS_FLAG)
     private val linePaint = Paint(Paint.ANTI_ALIAS_FLAG)
     private var menu = arrayListOf<RouletteItem>()
@@ -53,6 +57,10 @@ class RouletteView: View, View.OnTouchListener {
         sectorPaint.isAntiAlias = true
         sectorPaint.textAlign = Paint.Align.CENTER
 
+        arrowPaint.color = Color.BLACK
+        arrowPaint.strokeWidth = 5F
+        arrowPaint.style = Paint.Style.STROKE
+
         textPaint.color = Color.WHITE
         textPaint.textSize = 40F
         textPaint.style = Paint.Style.FILL_AND_STROKE
@@ -69,6 +77,10 @@ class RouletteView: View, View.OnTouchListener {
         }
     }
 
+    override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
+        setMeasuredDimension(Utils.dpToPx(context, 400), Utils.dpToPx(context, 400))
+    }
+
     override fun onDraw(canvas: Canvas?) {
         super.onDraw(canvas)
 
@@ -76,12 +88,28 @@ class RouletteView: View, View.OnTouchListener {
         val theta = (360.toDouble() / count)
         var temp = 270.toDouble()
 
-        val rectF = RectF(0F, 0F, width.toFloat(), height.toFloat())
+        val rectF = RectF(50F, 50F, width.toFloat()-50, height.toFloat()-50)
+
         val rect = Rect(0, 0, width, height)
 
         val centerX = ((rect.left + rect.right) / 2).toFloat()
         val centerY = ((rect.top + rect.bottom) / 2).toFloat()
         val radius = (rect.right - rect.left) / 2
+
+        var x1 = centerX-150
+        var y1 = 50F
+        var x2 = centerX+150
+        var y2 = 50F
+
+        val path = Path()
+        path.reset()
+        path.moveTo(x1, y1)
+        path.cubicTo(centerX-80, 10F, centerX+80, 10F, x2, y2)
+
+        canvas?.drawPath(path, arrowPaint)
+
+        canvas?.drawLine(x1, y1, x1+15, y1-30, arrowPaint)
+        canvas?.drawLine(x1, y1, x1+30, y1+10, arrowPaint)
 
         for(i in 0 until count) {
             sectorPaint.color = colors[i%colors.size]
@@ -95,8 +123,8 @@ class RouletteView: View, View.OnTouchListener {
             val medianAngle = temp + theta/2
             val radian = Math.toRadians(medianAngle)
 
-            val textX = centerX + (radius * 0.75 * cos(radian)).toFloat()
-            val textY = centerY + (radius * 0.75 * sin(radian)).toFloat()
+            val textX = centerX + (radius * 0.6 * cos(radian)).toFloat()
+            val textY = centerY + (radius * 0.6 * sin(radian)).toFloat()
             
             canvas?.drawText(menu[i].name, textX - menu[i].name.length * 15, textY, textPaint)
             temp += theta
