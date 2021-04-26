@@ -1,5 +1,6 @@
 package com.example.roulette.customview
 
+import android.content.Context
 import android.graphics.*
 import android.util.AttributeSet
 import android.util.Log
@@ -8,15 +9,11 @@ import android.view.View
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.view.animation.RotateAnimation
-import com.example.roulette.R
-import com.example.roulette.repository.database.entity.RouletteItem
-import android.content.Context
-import android.text.Layout
-import android.view.LayoutInflater
-import android.widget.RelativeLayout
 import androidx.annotation.AnimRes
 import androidx.annotation.InterpolatorRes
+import com.example.roulette.R
 import com.example.roulette.repository.Utils
+import com.example.roulette.repository.database.entity.RouletteItem
 import java.util.*
 import kotlin.math.abs
 import kotlin.math.atan2
@@ -26,7 +23,6 @@ import kotlin.math.sin
 class RouletteView: View, View.OnTouchListener {
     private val tag = "RouletteView"
     private val sectorPaint = Paint(Paint.ANTI_ALIAS_FLAG)
-    private val arrowPaint = Paint(Paint.ANTI_ALIAS_FLAG)
     private val textPaint = Paint(Paint.ANTI_ALIAS_FLAG)
     private val linePaint = Paint(Paint.ANTI_ALIAS_FLAG)
     private var menu = arrayListOf<RouletteItem>()
@@ -56,10 +52,6 @@ class RouletteView: View, View.OnTouchListener {
         sectorPaint.style = Paint.Style.FILL_AND_STROKE
         sectorPaint.isAntiAlias = true
         sectorPaint.textAlign = Paint.Align.CENTER
-
-        arrowPaint.color = Color.BLACK
-        arrowPaint.strokeWidth = 5F
-        arrowPaint.style = Paint.Style.STROKE
 
         textPaint.color = Color.WHITE
         textPaint.textSize = 40F
@@ -105,11 +97,6 @@ class RouletteView: View, View.OnTouchListener {
         path.reset()
         path.moveTo(x1, y1)
         path.cubicTo(centerX-80, 10F, centerX+80, 10F, x2, y2)
-
-        canvas?.drawPath(path, arrowPaint)
-
-        canvas?.drawLine(x1, y1, x1+15, y1-30, arrowPaint)
-        canvas?.drawLine(x1, y1, x1+30, y1+10, arrowPaint)
 
         for(i in 0 until count) {
             sectorPaint.color = colors[i%colors.size]

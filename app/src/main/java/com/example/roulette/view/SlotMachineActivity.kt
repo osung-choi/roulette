@@ -8,12 +8,13 @@ import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import com.example.roulette.R
+import com.example.roulette.customview.MyActionBar
 import com.example.roulette.databinding.ActivitySlotMachineBinding
 import com.example.roulette.repository.database.entity.RouletteItem
 import com.example.roulette.viewmodel.SlotMachineViewModel
 import kotlinx.android.synthetic.main.activity_slot_machine.*
+import java.util.*
 
 class SlotMachineActivity : AppCompatActivity() {
     companion object {
@@ -43,5 +44,9 @@ class SlotMachineActivity : AppCompatActivity() {
         viewModel.startMachine.observe(this, Observer {
             slotMachineView.startSlotMachine()
         })
+
+        MyActionBar(this, supportActionBar).run {
+            setActionBar("슬롯머신")
+        }
     }
 }
